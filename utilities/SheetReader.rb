@@ -5,23 +5,32 @@ require_relative '../model/ActivePhone'
 
 class SheetReader
 
-	def self.process(lines)
-	    phone_hash = {}
-	    CSV.parse(lines.join) do |row|
-	    	upsert_indexed_by_first(phone_hash, row)
-	    end
-	    phone_hash.map do |key, value|
-	    	phone_hash[key].sort!
-	    end
-	    phone_numbers = phone_hash.keys.map(&:to_i)
-	    result = ActivePhone.fetch_records_by_phone_numbers(phone_numbers)
-	    ActivePhone.delete_all_records_of_phone_numbers(phone_numbers)
+	public
 
-	    #Merge Sort
-	    result_wala_hash = hash_append_array(result)
-	    phone_hash = merge_hashe_sort(result_wala_hash, phone_hash, phone_numbers)
-		merge_batch(phone_hash)
-		ActivePhone.bulk_insert(phone_hash)
+	def self.process(lines)
+	    csv_batch_results_mapping = {}
+	    CSV.parse(lines.join) do |row|
+	    	upsert_indexed_by_first(csv_batch_results_mapping, row)
+	    end
+
+		phone_numbers_in_current_batch = csv_batch_results_mapping.keys.map(&:to_i)
+	    db_results_mapping = create_db_results_mapping(csv_batch_results_mapping, phone_numbers_in_current_batch)
+	    csv_batch_results_mapping = merge_and_sort_mappings(db_results_mapping, csv_batch_results_mapping, phone_numbers_in_current_batch)
+		create_divisions(csv_batch_results_mapping)
+		ActivePhone.bulk_insert(csv_batch_results_mapping)
+	end
+
+	private
+
+	def self.create_db_results_mapping(master_hash, phone_numbers_in_current_batch)
+	    master_hash.map do |key, value|
+	    	master_hash[key].sort!
+	    end
+
+	    result = ActivePhone.fetch_records_by_phone_numbers(phone_numbers_in_current_batch)
+	    ActivePhone.delete_all_records_of_phone_numbers(phone_numbers_in_current_batch)
+
+	    db_results_mapping = hash_append_array(result)
 	end
 
 	def self.hash_append_array(master_hash)
@@ -41,7 +50,7 @@ class SheetReader
 	end
 
 
-	def self.merge_hashe_sort(db_hash, memory_hash, phone_numbers)
+	def self.merge_and_sort_mappings(db_hash, memory_hash, phone_numbers)
 		phone_numbers.each do |num|
 			if (db_hash[num])
 				memory_hash[num.to_s] = (db_hash[num] + memory_hash[num.to_s]).sort!
@@ -50,7 +59,7 @@ class SheetReader
 		return memory_hash
 	end
 
-	def self.merge_batch(phone_hash)
+	def self.create_divisions(phone_hash)
 		phone_hash.each do |phone_number, array_of_dates|
 			comparing_array = array_of_dates.dup
 			final_keywise_result = []
