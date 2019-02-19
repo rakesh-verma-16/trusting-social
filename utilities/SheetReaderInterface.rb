@@ -1,80 +1,45 @@
 require 'csv'
 require 'pry'
 require 'pp'
-require 'sqlite3'
+require_relative '../model/ActivePhone'
 
 class SheetReader
 
-	def self.read
+	def self.process(lines)
+	    phone_hash = {}
+	    CSV.parse(lines.join) do |row|
+	    	upsert_indexed_by_first(phone_hash, row)
+	    end
+	    phone_hash.map do |key, value|
+	    	phone_hash[key].sort!
+	    end
+	    phone_numbers = phone_hash.keys.map(&:to_i)
+	    result = ActivePhone.fetch_records_by_phone_numbers(phone_numbers)
+	    ActivePhone.delete_all_records_of_phone_numbers(phone_numbers)
 
-		db = SQLite3::Database.new 'ts.db'
-		header_row = true
-		File.open("big_data.csv") do |file|
-		  file.lazy.each_slice(10) do |lines|
-		  	if (header_row) 
-		  		lines.slice!(0)
-		  		header_row = false
-		  	end
-		    phone_hash = {}
-		    CSV.parse(lines.join) do |row|
-		    	if phone_hash[row[0]]
-		    		phone_hash[row[0]] << [row[1], row[2]]
-		    	else
-		    		phone_hash[row[0]] = [[row[1], row[2]]]
-		    	end
-		    end
-
-		    phone_hash.map do |key, value|
-		    	phone_hash[key].sort!
-		    end
-
-			phone_numbers = phone_hash.keys.map(&:to_i)
-
-		    result = db.execute "
-		    SELECT * from phones 
-		    where phone_number in ("+phone_numbers.join(',')+") order by phone_number, start_date asc;"
-
-		    db.execute "
-		    	DELETE FROM phones
-		    	WHERE phone_number in ("+phone_numbers.join(',')+");
-		    "
-		    #Merge Sort
-		    binding.pry
-
-		    result_wala_hash = {}
-		    result.each do |x|
-	    		if result_wala_hash[x[0]]
-	    			result_wala_hash[x[0]] << [x[1], x[2]]
-	    		else
-	    			result_wala_hash[x[0]] = [[x[1], x[2]]]
-	    		end 
-		    end
-
-		    phone_hash = merge_hashe_sort(result_wala_hash, phone_hash, phone_numbers)
-			merge_batch(phone_hash)
-			phone_hash.each do |key, data_set|
-				db.transaction
-				data_set.each do |sdate, edate|
-					sql_string = "insert into phones values (#{key}, date(\""+sdate+"\"),date(\""+edate+"\"));"
-					db.execute sql_string
-				end
-				db.commit
-			end
-		  end
-		end
-
-		final_result = db.execute "select phone_number, MAX(start_date) 
-		from phones group by phone_number 
-		 order by start_date desc;"
-		pp final_result
+	    #Merge Sort
+	    result_wala_hash = hash_append_array(result)
+	    phone_hash = merge_hashe_sort(result_wala_hash, phone_hash, phone_numbers)
+		merge_batch(phone_hash)
+		ActivePhone.bulk_insert(phone_hash)
 	end
 
-	def hash_append_array(master_hash, array_to_append)
+	def self.hash_append_array(master_hash)
 		resultant_hash = {}
 		master_hash.each do |item|
-			
+			upsert_indexed_by_first(resultant_hash, item)
 		end
+		resultant_hash
 	end
+
+	def self.upsert_indexed_by_first(master_hash, array)
+		if master_hash[array.first]
+	    	master_hash[array.first] << [array[1], array[2]]
+	    else
+	    	master_hash[array.first] = [[array[1], array[2]]]
+	    end
+	end
+
 
 	def self.merge_hashe_sort(db_hash, memory_hash, phone_numbers)
 		phone_numbers.each do |num|
