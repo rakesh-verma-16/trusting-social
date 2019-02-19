@@ -1,6 +1,7 @@
 Hi,
 
+TODOs:
 
-Dear all, 
-
-Thanks
+Write to CSV
+Add documentation
+Add test cases
