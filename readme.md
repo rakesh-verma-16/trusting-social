@@ -10,7 +10,7 @@ Last activation date doesn't include the dates in which the phone number plan wa
 
 *A phone number is said to be activated only if there is a gap of 1-2 months between last de-activation date and the current activation date*
 
-##Solution
+## Solution
 
 Idea is to break the CSV into batches, consume a batch to find the timelines for each phone number in that batch and store it into the database.
 
@@ -32,11 +32,14 @@ activation dates => [["1999-01-01", "1999-01-05"],
 
 Simplified data would be:
 activation dates => [["1999-01-01", "1999-01-15"],
-					 ["1999-01-20", "1999-01-25"]]
+					["1999-01-20", "1999-01-25"]]
 
 ```
 
-All the continous sections of dates are merged into one section.
+All the continous sections of dates are merged into one section. 
+After processing all the batches, final result is inserted into a result file under `result-file` directory in the following format
+
+`PHONE_NUMBER,REAL_ACTIVATION_DATE`
 
 ## Getting Started
 
@@ -57,7 +60,7 @@ A new file would be created in the `result-file` directory of the project with t
 ### Pre-requisites
 -	Ruby
 
-###Libraries
+### Libraries
 -	SQLite3
 -	CSV
 
@@ -83,7 +86,7 @@ To run the tests, go to the project directory and run the file directly.
 
 ``` ruby path_to_project/tests/SheetReaderTest.rb```
 
-###Tests explained:
+### Tests explained:
 
 The test sections contains 5 tests set which run over different type of data sets. The data sets has the 5 properties:
 
