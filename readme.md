@@ -30,6 +30,7 @@ For ex:
 | 0987000001     | 2016-03-20         | 2016-03-25				   |
 
 Simplified data would be:
+
 | PHONE_NUMBER   | ACTIVATION_DATE    | DEACTIVATION_DATE  |
 | -------------- |:------------------:|-------------------:|
 | 0987000001     | 2016-03-01         | 2016-03-11		   |
