@@ -26,9 +26,9 @@ For ex:
 
 Phone number => 9899585453
 activation dates => [["1999-01-01", "1999-01-05"],
-					["1999-01-05", "1999-01-10"],
-					["1999-01-11", "1999-01-15"],
-					["1999-01-20", "1999-01-25"]]
+		["1999-01-05", "1999-01-10"],
+		["1999-01-11", "1999-01-15"],
+		["1999-01-20", "1999-01-25"]]
 
 Simplified data would be:
 activation dates => [["1999-01-01", "1999-01-15"],
@@ -45,10 +45,12 @@ After processing all the batches, final result is inserted into a result file un
 
 The program is to be initialized from ruby terminal. **Please follow the following instructions to run the program**:
 
--	Go to the project directory - 	` cd path_to_project`
+-	Go to the project directory - 	`cd path_to_project`
 -	Run the terminal - `irb`
 -	Load the **main** file into terminal - `require_relative './main'`
--	call the `main` function with path to `the csv file` and `the batch size` - `main "test-dataset/small-miscellaneous-data.csv",1000`
+-	call the **main function** with path to **the csv file** (default: "test-dataset/small-miscellaneous-data.csv") and **the batch size** (default 1000) -
+
+	 `main "test-dataset/small-miscellaneous-data.csv",1000`
 
 Expected output:
 `"Data written to {{input-file-name}}-result.csv"` would be displayed in terminal.
@@ -91,17 +93,11 @@ PHONE_NUMBER,REAL_ACTIVATION_DATE
 
 ### Installing the pre-requisites
 
-- Install ruby - Download the package and follow instructions from
+- Install ruby - Download the package and follow instructions from - `http://rubyinstaller.org/`
 
-```http://rubyinstaller.org/```
+- Install SQLITE3 - `gem install sqlite3`
 
-- Install SQLITE3 
-
-```gem install sqlite3```
-
- - Install CSV
-
-```gem install csv```
+ - Install CSV - `gem install csv`
 
 ## Running the tests
 
