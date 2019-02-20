@@ -43,14 +43,12 @@ After processing all the batches, final result is inserted into a result file un
 
 ## Getting Started
 
-Run in ruby terminal, require main, call main with sheet patha and batch size
+The program is to be initialized from ruby terminal. **Please follow the following instructions to run the program**:
 
-The program is run from ruby terminal. Please follow the following instructions to run the program:
-
--	Go to the project directory - 	``` cd path_to_project```
--	Run the terminal - ```irb```
--	Load the **main** file into terminal - ```require_relative './main'```
--	call the `main` function with path to `the csv file` and `the batch size` - ```main "test-dataset/small-miscellaneous-data.csv",1000```	
+-	Go to the project directory - 	` cd path_to_project`
+-	Run the terminal - `irb`
+-	Load the **main** file into terminal - `require_relative './main'`
+-	call the `main` function with path to `the csv file` and `the batch size` - `main "test-dataset/small-miscellaneous-data.csv",1000`
 
 Expected output:
 `"Data written to {{input-file-name}}-result.csv"` would be displayed in terminal.
