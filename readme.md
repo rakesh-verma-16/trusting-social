@@ -49,7 +49,7 @@ The project can be initialized by directly calling the init file `init.rb` with 
 example:
 
 ```
-ruby init.rb "test-dataset/small-miscellaneous-data.csv" 10000 
+ruby init.rb "path_to_project/test-dataset/small-miscellaneous-data.csv" 10000 
 ```
 
 The command takes two inputs
@@ -67,26 +67,29 @@ A new file would be created in the `result-file` directory of the project with t
 
 **Input CSV Content**:
 
-```
-PHONE_NUMBER,ACTIVATION_DATE,DEACTIVATION_DATE
-0987000001,2016-03-01,2016-05-01
-0987000002,2016-02-01,2016-03-01
-0987000001,2016-01-01,2016-03-01
-0987000001,2016-12-01,
-0987000002,2016-03-01,2016-05-01
-0987000003,2016-01-01,2016-01-10
-0987000001,2016-09-01,2016-12-01
-0987000002,2016-05-01,
-0987000001,2016-06-01,2016-09-01
-```
+
+| PHONE_NUMBER   | ACTIVATION_DATE    | DEACTIVATION_DATE  |
+| -------------- |:------------------:|-------------------:|
+| 0987000001     | 2016-03-01         | 2016-05-01		   |
+| 0987000002     | 2016-02-01         | 2016-03-01		   |
+| 0987000001     | 2016-01-01         | 2016-03-01		   |
+| 0987000001     | 2016-12-01         | 				   |
+| 0987000002     | 2016-03-01         | 2016-05-01		   |
+| 0987000003     | 2016-01-01         | 2016-01-01		   |
+| 0987000001     | 2016-09-01         | 2016-12-01		   |
+| 0987000002     | 2016-05-01         | 				   |
+| 0987000001     | 2016-06-01         | 2016-09-01		   |
+
 
 **Output CSV content**
 
 ```
-PHONE_NUMBER,REAL_ACTIVATION_DATE
-987000001,2016-06-01
-987000002,2016-02-01
-987000003,2016-01-01
+| PHONE_NUMBER   | REAL_ACTIVATION_DATE    |
+| -------------- |:-----------------------:|
+| 0987000001     | 2016-06-01        	   |
+| 0987000002     | 2016-02-01        	   |
+| 0987000001     | 2016-01-01        	   |
+
 ```
 
 
