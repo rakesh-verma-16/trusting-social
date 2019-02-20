@@ -55,6 +55,33 @@ Expected output:
 
 A new file would be created in the `result-file` directory of the project with the same name as input file appened by `-result` before the CSV extension.
 
+## Example
+
+**Input CSV Content**:
+
+```
+PHONE_NUMBER,ACTIVATION_DATE,DEACTIVATION_DATE
+0987000001,2016-03-01,2016-05-01
+0987000002,2016-02-01,2016-03-01
+0987000001,2016-01-01,2016-03-01
+0987000001,2016-12-01,
+0987000002,2016-03-01,2016-05-01
+0987000003,2016-01-01,2016-01-10
+0987000001,2016-09-01,2016-12-01
+0987000002,2016-05-01,
+0987000001,2016-06-01,2016-09-01
+```
+
+**Output CSV content**
+
+```
+PHONE_NUMBER,REAL_ACTIVATION_DATE
+987000001,2016-06-01
+987000002,2016-02-01
+987000003,2016-01-01
+```
+
+
 ### Pre-requisites
 -	Ruby
 
