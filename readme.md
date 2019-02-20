@@ -22,24 +22,26 @@ In case, we come across any dates where the plan is changed for a particular pho
 
 For ex: 
 
-```
-
-Phone number => 9899585453
-activation dates => [["1999-01-01", "1999-01-05"],
-		["1999-01-05", "1999-01-10"],
-		["1999-01-11", "1999-01-15"],
-		["1999-01-20", "1999-01-25"]]
+| PHONE_NUMBER   | ACTIVATION_DATE    | DEACTIVATION_DATE  |
+| -------------- |:------------------:|-------------------:|
+| 0987000001     | 2016-03-01         | 2016-03-05		   |
+| 0987000001     | 2016-03-05         | 2016-03-08		   |
+| 0987000001     | 2016-03-08         | 2016-03-11		   |
+| 0987000001     | 2016-03-20         | 2016-03-25				   |
 
 Simplified data would be:
-activation dates => [["1999-01-01", "1999-01-15"],
-					["1999-01-20", "1999-01-25"]]
+| PHONE_NUMBER   | ACTIVATION_DATE    | DEACTIVATION_DATE  |
+| -------------- |:------------------:|-------------------:|
+| 0987000001     | 2016-03-01         | 2016-03-11		   |
+| 0987000001     | 2016-03-20         | 2016-03-25		   |
 
-```
 
 All the continous sections of dates are merged into one section. 
 After processing all the batches, final result is inserted into a result file under `result-file` directory in the following format
 
-`PHONE_NUMBER,REAL_ACTIVATION_DATE`
+| PHONE_NUMBER   | REAL_ACTIVATION_DATE    |
+| -------------- |:-----------------------:|
+| 0987000001     | 2016-03-20              |
 
 ## Getting Started
 
@@ -83,15 +85,11 @@ A new file would be created in the `result-file` directory of the project with t
 
 **Output CSV content**
 
-```
 | PHONE_NUMBER   | REAL_ACTIVATION_DATE    |
 | -------------- |:-----------------------:|
 | 0987000001     | 2016-06-01        	   |
 | 0987000002     | 2016-02-01        	   |
 | 0987000001     | 2016-01-01        	   |
-
-```
-
 
 ### Pre-requisites
 -	Ruby
