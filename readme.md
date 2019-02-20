@@ -12,9 +12,9 @@ Last activation date doesn't include the dates in which the phone number plan wa
 
 ## Solution
 
-Idea is to break the CSV into batches, consume a batch to find the timelines for each phone number in that batch and store it into the database.
+Idea is to break the CSV into batches, consume a batch to find the timelines for each phone number in that batch and store it into the local file.
 
-For the next set of batches, we process them (the batches) with the existing and already simplified data stored in our database.
+For the next set of batches, we process them (the batches) with the existing and already simplified data stored in our local file system database.
 
 Here simplification term specifies that for each phone number, we have all the activation dates (not the ones where the plan is changed) from all the batches processed. 
 
@@ -96,7 +96,7 @@ A new file would be created in the `result-file` directory of the project with t
 -	Ruby
 
 ### Libraries
--	SQLite3
+-	SQLite3 - Server-less database. used to store processed content in a file
 -	CSV
 
 ### Installing the pre-requisites
