@@ -24,7 +24,8 @@ class ActivePhone
 	# phone_hash is a mapping between phone number and arrays of the time spans it 
 	# was used for.
 	#
-	# @param phone_hash   hash map { :integer => [[string, string],[string, string]]}
+	# params:
+	# +phone_hash+::   hash map { :integer => [[string, string],[string, string]]}
 	def self.bulk_insert(phone_hash)
 		db = SQLite3::Database.new 'ts.db'
 		phone_hash.each do |key, data_set|
@@ -43,7 +44,8 @@ class ActivePhone
 	end
 
 	# Deletes all entries from db for a set of phone numbers.
-	# @param phone_numbers    array of integers
+	# param:
+	# +phone_numbers+::    array of integers
 	def self.delete_all_records_of_phone_numbers(phone_numbers)
 		db = SQLite3::Database.new 'ts.db'
 		db.execute "
@@ -53,7 +55,8 @@ class ActivePhone
 	end
 
 	# Getter method for set of phone numbers.
-	# @param phone_numbers    array of integers
+	# param:
+	# +phone_numbers+::    array of integers
 	def self.fetch_records_by_phone_numbers(phone_numbers)
 		db = SQLite3::Database.new 'ts.db'
 		db.execute "
@@ -64,7 +67,7 @@ class ActivePhone
 
 	# Getter method to return all last user's activation date
 	# for all the phone numbers from database.
-	def self.find_max
+	def self.find_last_users_activation_date
 		db = SQLite3::Database.new 'ts.db'
 		db.execute "
 			select phone_number, MAX(start_date) 

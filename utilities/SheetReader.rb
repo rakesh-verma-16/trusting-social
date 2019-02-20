@@ -1,65 +1,68 @@
 require 'csv'
-require 'pry'
-require 'pp'
 require_relative '../model/ActivePhone'
+require_relative 'SheetReaderHelper'
 
 class SheetReader
 
 	public
 
-	def self.process(lines)
+	# Takes the sheet path, breaks it into a batch of given size
+	# operates over the batch and process it in sync with previously 
+	# processed batches.
+	# Params:
+	# +sheet_path+:: Path to the sheet file.
+	# +batch_size+:: Batch size to be processed
+	def self.process_csv(sheet_path, batch_size)
+		File.open(sheet_path) do |file|
+			header_row = true
+			file.lazy.each_slice(batch_size) do |lines|
+				if (header_row) 
+	  				lines.slice!(0)
+	  				header_row = false
+	  			end
+				process_batch_data(lines)
+			end
+		end
+	end
+
+	# Creates a new output file to store the results in a CSV
+	# Params:
+	# +data+:: result data to be written to CSV.
+	# +file_basename+:: name of the file without extensions.
+	def self.write_to_file(data, file_basename)
+		SheetReaderHelper.set_headers_to_data(data)
+		filename = "result-file/"+file_basename+"-result.csv"
+		File.open(filename, "w") {|f| f.write(data.inject([]) {
+		    |csv, data| csv << CSV.generate_line(data) 
+		}.join(""))}
+		"Data written to #{filename}"
+	end
+
+	# Private methods section begins
+	private
+
+	# Takes the limited lines of CSV (batch size) as input
+	# Compares the phone and creates a mapping of previous batch results and current results
+	# Inserts the resulting set back to storing file (database)
+	# Params:
+	# +lines+:: String of lines containing batched data from input csv
+	def self.process_batch_data(lines)
 	    csv_batch_results_mapping = {}
 	    CSV.parse(lines.join) do |row|
-	    	upsert_indexed_by_first(csv_batch_results_mapping, row)
+	    	SheetReaderHelper.upsert_indexed_by_first(csv_batch_results_mapping, row)
 	    end
 
 		phone_numbers_in_current_batch = csv_batch_results_mapping.keys.map(&:to_i)
-	    db_results_mapping = create_db_results_mapping(csv_batch_results_mapping, phone_numbers_in_current_batch)
-	    csv_batch_results_mapping = merge_and_sort_mappings(db_results_mapping, csv_batch_results_mapping, phone_numbers_in_current_batch)
-		create_divisions(csv_batch_results_mapping)
+	    db_results_mapping = SheetReaderHelper.create_db_results_mapping(csv_batch_results_mapping, phone_numbers_in_current_batch)
+	    csv_batch_results_mapping = SheetReaderHelper.merge_and_sort_mappings(db_results_mapping, csv_batch_results_mapping, phone_numbers_in_current_batch)
+		create_timeline_based_division(csv_batch_results_mapping)
 		ActivePhone.bulk_insert(csv_batch_results_mapping)
 	end
 
-	private
-
-	def self.create_db_results_mapping(master_hash, phone_numbers_in_current_batch)
-	    master_hash.map do |key, value|
-	    	master_hash[key].sort!
-	    end
-
-	    result = ActivePhone.fetch_records_by_phone_numbers(phone_numbers_in_current_batch)
-	    ActivePhone.delete_all_records_of_phone_numbers(phone_numbers_in_current_batch)
-
-	    db_results_mapping = hash_append_array(result)
-	end
-
-	def self.hash_append_array(master_hash)
-		resultant_hash = {}
-		master_hash.each do |item|
-			upsert_indexed_by_first(resultant_hash, item)
-		end
-		resultant_hash
-	end
-
-	def self.upsert_indexed_by_first(master_hash, array)
-		if master_hash[array.first]
-	    	master_hash[array.first] << [array[1], array[2]]
-	    else
-	    	master_hash[array.first] = [[array[1], array[2]]]
-	    end
-	end
-
-
-	def self.merge_and_sort_mappings(db_hash, memory_hash, phone_numbers)
-		phone_numbers.each do |num|
-			if (db_hash[num])
-				memory_hash[num.to_s] = (db_hash[num] + memory_hash[num.to_s]).sort!
-			end
-		end
-		return memory_hash
-	end
-
-	def self.create_divisions(phone_hash)
+	# Main method to merge timelines for a number based on continous use
+	# Params:
+	# +phone_hash+:: Hash which is to be processed based on phone numbers
+	def self.create_timeline_based_division(phone_hash)
 		phone_hash.each do |phone_number, array_of_dates|
 			comparing_array = array_of_dates.dup
 			final_keywise_result = []

@@ -6,18 +6,16 @@ require_relative 'utilities/SheetReader'
 # +sheet_path+:: Path to the sheet.
 # +batch_size+:: Batch size to process limited number of rows from CSV at a time.
 def main(sheet_path = "test-dataset/small-miscellaneous-data.csv", batch_size = 10000)
-	ActivePhone.create_table
-	File.open(sheet_path) do |file|
-		header_row = true
-		file.lazy.each_slice(batch_size) do |lines|
-			if (header_row) 
-	  			lines.slice!(0)
-	  			header_row = false
-	  		end
-			SheetReader.process(lines)
-		end
-	end
+	response = create_timelines_from_numbers(sheet_path, batch_size)
+	SheetReader.write_to_file(response, File.basename(sheet_path, ".csv"))
+end
 
-	result = ActivePhone.find_max
-	pp result
+private
+
+def create_timelines_from_numbers(sheet_path, batch_size)
+	ActivePhone.create_table
+
+	SheetReader.process_csv(sheet_path, batch_size)
+
+	ActivePhone.find_last_users_activation_date
 end
