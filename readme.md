@@ -43,14 +43,20 @@ After processing all the batches, final result is inserted into a result file un
 
 ## Getting Started
 
-The program is to be initialized from ruby terminal. **Please follow the following instructions to run the program**:
+The project can be initialized by directly calling the init file `init.rb` with path of the csv file and the desired batch size in the terminal.
 
--	Go to the project directory - 	`cd path_to_project`
--	Run the terminal - `irb`
--	Load the **main** file into terminal - `require_relative './main'`
--	call the **main function** with path to **the csv file** (default: "test-dataset/small-miscellaneous-data.csv") and **the batch size** (default 1000) -
 
-	 `main "test-dataset/small-miscellaneous-data.csv",1000`
+example:
+
+```
+ruby init.rb "test-dataset/small-miscellaneous-data.csv" 10000 
+```
+
+The command takes two inputs
+-	path to csv file (mandatory)
+-	batch size, default 10000
+
+If no path to csv is provided or the file extension isn't csv, an IOError would be displayed.
 
 Expected output:
 `"Data written to {{input-file-name}}-result.csv"` would be displayed in terminal.
@@ -123,3 +129,13 @@ Once the processing is over, the new created file is compared with an already pr
 If the calculated result is identical to the correct result, the test is considered to be **passed**, otherwise **failed**.
 
 All the result files created during tests are deleted after the execution.
+
+### TO-Dos
+[x] Add tests
+[x] Add documentation
+[x] Test for large data sets
+[x] Seperation of concerns
+[ ] Add check for edge case if all 50 million entries are of same number and none overlaps
+[ ] Feature to read CSV from a url (exists)
+[x] Add a check to make sure only CSV file is provided as input
+
