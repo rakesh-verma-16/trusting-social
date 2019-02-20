@@ -35,7 +35,7 @@ class SheetReader
 		File.open(filename, "w") {|f| f.write(data.inject([]) {
 		    |csv, data| csv << CSV.generate_line(data) 
 		}.join(""))}
-		"Data written to #{filename}"
+		"Data written to #{filename}\n"
 	end
 
 	# Private methods section begins
