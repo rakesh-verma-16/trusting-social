@@ -133,11 +133,12 @@ If the calculated result is identical to the correct result, the test is conside
 All the result files created during tests are deleted after the execution.
 
 ### TO-Dos
-[x] Add tests
-[x] Add documentation
-[x] Test for large data sets
-[x] Seperation of concerns
-[ ] Add check for edge case if all 50 million entries are of same number and none overlaps
-[ ] Feature to read CSV from a url (exists)
-[x] Add a check to make sure only CSV file is provided as input
+
+- 	[x] Add tests
+- 	[x] Add documentation
+-	[x] Test for large data sets
+-	[x] Seperation of concerns
+-	[ ] Add check for edge case if all 50 million entries are of same number and none overlaps
+-	[ ] Feature to read CSV from a url (exists)
+-	[x] Add a check to make sure only CSV file is provided as input
 
