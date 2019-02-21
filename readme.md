@@ -12,7 +12,7 @@ Last activation date doesn't include the dates in which the phone number plan wa
 
 ## Solution
 
-Idea is to break the CSV into batches, consume a batch to find the timelines for each phone number in that batch and store it into the local file.
+Idea is to break the CSV into batches, consume a batch to find the timelines for each phone number in that batch and store it into the local file. 
 
 For the next set of batches, we process them (the batches) with the existing and already simplified data stored in our local file system database.
 
@@ -43,6 +43,8 @@ After processing all the batches, final result is inserted into a result file un
 | PHONE_NUMBER   | REAL_ACTIVATION_DATE    |
 | -------------- |:-----------------------:|
 | 0987000001     | 2016-03-20              |
+
+The process is widely-known as **External Merge** Sorting which works on that large data sets that can not reside in main memory
 
 ## Getting Started
 
@@ -96,7 +98,7 @@ A new file would be created in the `result-file` directory of the project with t
 -	Ruby
 
 ### Libraries
--	SQLite3 - Server-less database. used to store processed content in a file
+-	SQLite3 - is used only for storing system i.e, to get and delete data.
 -	CSV
 
 ### Installing the pre-requisites
