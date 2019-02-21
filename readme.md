@@ -98,7 +98,7 @@ A new file would be created in the `result-file` directory of the project with t
 -	Ruby
 
 ### Libraries
--	SQLite3 - is used only for storing system i.e, to get and delete data.
+-	SQLite3 - is used only for storing system i.e, to get and delete data. Doesn't perform any sorting or filtering operations on DB level. 
 -	CSV
 
 ### Installing the pre-requisites
