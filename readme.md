@@ -90,7 +90,7 @@ A new file would be created in the `result-file` directory of the project with t
 | -------------- |:-----------------------:|
 | 0987000001     | 2016-06-01        	   |
 | 0987000002     | 2016-02-01        	   |
-| 0987000001     | 2016-01-01        	   |
+| 0987000003     | 2016-01-01        	   |
 
 ### Pre-requisites
 -	Ruby
